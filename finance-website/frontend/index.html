@@ -1,101 +1,341 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Smart Finance Planner</title>
-<link rel="stylesheet" href="style.css">
-</head>
+    <title>Smart Finance Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        /* Card Style */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+
+        /* Input Group */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Grid Layout for Monthly Inputs */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Button Styles */
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Two-column layout for initial inputs */
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Input Placeholder Style */
+        ::placeholder {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .message.error {
+            background: #fee;
+            color: #c33;
+            border-left: 4px solid #c33;
+            display: block;
+        }
+    </style>
+</head>
 <body>
 
 <div class="container">
+    <div class="header">
+        <h1>💰 Smart Finance Planner</h1>
+        <p>Plan your savings, track expenses, achieve your financial goals!</p>
+    </div>
 
-<h1>Smart Finance Planner</h1>
+    <div class="card">
+        <h2>📊 Basic Information</h2>
+        <div class="row">
+            <div class="input-group">
+                <label>📅 Number of Months</label>
+                <input id="months" type="number" placeholder="e.g., 12" min="1">
+            </div>
+            <div class="input-group">
+                <label>🎯 Total Saving Goal (₹)</label>
+                <input id="goal" type="number" placeholder="e.g., 100000">
+            </div>
+        </div>
+        <button onclick="generate()">✨ Create Monthly Inputs ✨</button>
+    </div>
 
-<div class="card">
-
-<label>Number of months for savings</label>
-<input id="months" type="number">
-
-<label>Total Saving Goal</label>
-<input id="goal" type="number">
-
-<button onclick="generate()">Create Monthly Inputs</button>
-
-</div>
-
-<div id="formArea"></div>
-
+    <div id="formArea"></div>
+    
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 10px; color: white;">Analyzing your finances...</p>
+    </div>
 </div>
 
 <script>
 
 function generate(){
+    let m = document.getElementById("months").value;
+    let goal = document.getElementById("goal").value;
+    
+    if (!m || m <= 0) {
+        alert("Please enter the number of months");
+        return;
+    }
+    if (!goal || goal <= 0) {
+        alert("Please enter your saving goal");
+        return;
+    }
+    
+    let area = document.getElementById("formArea");
+    let html = `<div class="card"><h2>📝 Monthly Income & Expenses</h2>`;
 
-let m=document.getElementById("months").value;
-let area=document.getElementById("formArea");
+    for(let i = 1; i <= m; i++){
+        html += `
+            <div class="card" style="margin-top: 20px;">
+                <h2>📆 Month ${i}</h2>
+                <div class="grid">
+                    <input placeholder="💰 Income" class="income" type="number">
+                    <input placeholder="🍔 Food" class="food" type="number">
+                    <input placeholder="🚗 Transport" class="transport" type="number">
+                    <input placeholder="🏠 Rent" class="rent" type="number">
+                    <input placeholder="🎬 Entertainment" class="fun" type="number">
+                    <input placeholder="🛍️ Shopping" class="shopping" type="number">
+                </div>
+            </div>
+        `;
+    }
 
-let html="";
-
-for(let i=1;i<=m;i++){
-
-html+=`
-<div class="card">
-<h2>Month ${i}</h2>
-
-<div class="grid">
-
-<input placeholder="Income" class="income">
-
-<input placeholder="Food" class="food">
-
-<input placeholder="Transport" class="transport">
-
-<input placeholder="Rent" class="rent">
-
-<input placeholder="Entertainment" class="fun">
-
-<input placeholder="Shopping" class="shopping">
-
-</div>
-</div>
-`;
-}
-
-html+=`<button onclick="submitData()">Analyze Finance</button>`;
-
-area.innerHTML=html;
+    html += `<button onclick="submitData()">📈 Analyze Finance 📈</button></div>`;
+    area.innerHTML = html;
+    
+    // Scroll to form area
+    area.scrollIntoView({ behavior: 'smooth' });
 }
 
 function submitData(){
+    let months = document.getElementById("months").value;
+    let goal = document.getElementById("goal").value;
+    
+    if (!months || months <= 0) {
+        alert("Please enter number of months");
+        return;
+    }
+    
+    let data = {
+        months: months,
+        goal: goal,
+        income: [],
+        food: [],
+        transport: [],
+        rent: [],
+        fun: [],
+        shopping: []
+    };
 
-let data={
-months:document.getElementById("months").value,
-goal:document.getElementById("goal").value,
-income:[],
-food:[],
-transport:[],
-rent:[],
-fun:[],
-shopping:[]
-};
+    document.querySelectorAll(".income").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.income.push(parseFloat(val));
+    });
+    document.querySelectorAll(".food").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.food.push(parseFloat(val));
+    });
+    document.querySelectorAll(".transport").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.transport.push(parseFloat(val));
+    });
+    document.querySelectorAll(".rent").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.rent.push(parseFloat(val));
+    });
+    document.querySelectorAll(".fun").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.fun.push(parseFloat(val));
+    });
+    document.querySelectorAll(".shopping").forEach(e => {
+        let val = e.value;
+        if (!val) val = 0;
+        data.shopping.push(parseFloat(val));
+    });
 
-document.querySelectorAll(".income").forEach(e=>data.income.push(e.value));
-document.querySelectorAll(".food").forEach(e=>data.food.push(e.value));
-document.querySelectorAll(".transport").forEach(e=>data.transport.push(e.value));
-document.querySelectorAll(".rent").forEach(e=>data.rent.push(e.value));
-document.querySelectorAll(".fun").forEach(e=>data.fun.push(e.value));
-document.querySelectorAll(".shopping").forEach(e=>data.shopping.push(e.value));
-
-fetch("https://finance-qk18.onrender.com/calculate",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify(data)
-})
-.then(r=>r.json())
-.then(res=>{
-localStorage.setItem("financeData",JSON.stringify(res));
-window.location.href="dashboard.html";
-});
+    // Show loading
+    document.getElementById("loading").classList.add("active");
+    
+    fetch("https://finance-qk18.onrender.com/calculate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(res => {
+        localStorage.setItem("financeData", JSON.stringify(res));
+        window.location.href = "dashboard.html";
+    })
+    .catch(err => {
+        document.getElementById("loading").classList.remove("active");
+        alert("Error: " + err.message);
+    });
 }
 
 </script>
