@@ -1,44 +1,109 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="style.css">
+    <title>Savings vs Expenses</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <h1>Saving vs Expenses</h1>
+        <canvas id="lineChart"></canvas>
+    </div>
 
-<div class="container">
-<h1>Savings vs Expenses</h1>
+    <script>
+        // Get data from localStorage
+        let data = JSON.parse(localStorage.getItem("financeData"));
 
-<canvas id="lineChart"></canvas>
+        // Check if data exists
+        if (!data || !data.results) {
+            document.getElementById("lineChart").innerHTML = "No data available. Please fill the form first.";
+        } else {
+            let labels = [];
+            let expenses = [];
+            let savings = [];
 
-</div>
+            // Loop through results to extract data
+            data.results.forEach(m => {
+                labels.push("Month " + m.month);
+                expenses.push(m.total_expense);
+                savings.push(m.savings);
+            });
 
-<script>
-
-let data=JSON.parse(localStorage.getItem("financeData"));
-
-let labels=[];
-let expenses=[];
-let savings=[];
-
-data.results.forEach(m=>{
-labels.push("Month "+m.month);
-expenses.push(m.expense);
-savings.push(m.saved);
-});
-
-new Chart(document.getElementById("lineChart"),{
-type:"line",
-data:{
-labels:labels,
-datasets:[
-{label:"Expense",data:expenses},
-{label:"Saved",data:savings}
-]
-}
-});
-
-</script>
-
+            // Create the chart
+            new Chart(document.getElementById("lineChart"), {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Expenses",
+                            data: expenses,
+                            borderColor: "red",
+                            backgroundColor: "rgba(255, 0, 0, 0.1)",
+                            fill: true,
+                            tension: 0.1
+                        },
+                        {
+                            label: "Savings",
+                            data: savings,
+                            borderColor: "green",
+                            backgroundColor: "rgba(0, 255, 0, 0.1)",
+                            fill: true,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount (₹)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Months'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
