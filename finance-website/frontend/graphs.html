@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+<h1>Savings Trend</h1>
+<canvas id="chart"></canvas>
+</div>
+
+<script>
+
+const data=JSON.parse(localStorage.getItem("financeData"));
+
+new Chart(document.getElementById("chart"),{
+type:'line',
+data:{
+labels:data.results.map(m=>"Month "+m.month),
+datasets:[
+{label:'Savings',data:data.results.map(m=>m.savings)},
+{label:'Expenses',data:data.results.map(m=>m.total_expense)}
+]
+}
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+<h2>Expense Distribution</h2>
+<canvas id="chart"></canvas>
+</div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("financeData"));
+
+new Chart(chart,{
+type:"pie",
+data:{
+labels:["Food","Transport","Rent","Fun","Shopping"],
+datasets:[{
+data:data.expenses
+}]
+}
+);
+</script>

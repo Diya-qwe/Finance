@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+<h2>Last Months Saving Trend</h2>
+<canvas id="trend"></canvas>
+</div>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("financeData"));
+
+new Chart(trend,{
+type:"line",
+data:{
+labels:data.trend.map((_,i)=>"Month "+(i+1)),
+datasets:[{
+label:"Savings",
+data:data.trend
+}]
+}
+);
+</script>

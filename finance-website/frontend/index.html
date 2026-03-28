@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Finance Planner</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Smart Finance Planner</h1>
+
+<div class="card">
+
+<label>How many months?</label>
+<input id="months" type="number">
+
+<label>Total Saving Goal</label>
+<input id="goal" type="number">
+
+<button onclick="generate()">Create Monthly Inputs</button>
+
+</div>
+
+<div id="formArea"></div>
+
+</div>
+
+<script>
+
+function generate(){
+
+let m=document.getElementById("months").value;
+let area=document.getElementById("formArea");
+
+let html="";
+
+for(let i=1;i<=m;i++){
+
+html+=`
+<div class="card">
+<h2>Month ${i}</h2>
+
+<div class="grid">
+
+<input placeholder="Income" class="income">
+
+<input placeholder="Food" class="food">
+
+<input placeholder="Transport" class="transport">
+
+<input placeholder="Rent" class="rent">
+
+<input placeholder="Entertainment" class="fun">
+
+<input placeholder="Shopping" class="shopping">
+
+</div>
+</div>
+`;
+}
+
+html+=`<button onclick="submitData()">Analyze Finance</button>`;
+
+area.innerHTML=html;
+}
+
+function submitData(){
+
+let data={
+months:document.getElementById("months").value,
+goal:document.getElementById("goal").value,
+income:[],
+food:[],
+transport:[],
+rent:[],
+fun:[],
+shopping:[]
+};
+
+document.querySelectorAll(".income").forEach(e=>data.income.push(e.value));
+document.querySelectorAll(".food").forEach(e=>data.food.push(e.value));
+document.querySelectorAll(".transport").forEach(e=>data.transport.push(e.value));
+document.querySelectorAll(".rent").forEach(e=>data.rent.push(e.value));
+document.querySelectorAll(".fun").forEach(e=>data.fun.push(e.value));
+document.querySelectorAll(".shopping").forEach(e=>data.shopping.push(e.value));
+
+fetch("http://127.0.0.1:5000/calculate",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+.then(r=>r.json())
+.then(res=>{
+localStorage.setItem("financeData",JSON.stringify(res));
+window.location.href="dashboard.html";
+});
+}
+
+</script>
+
+</body>
+</html>

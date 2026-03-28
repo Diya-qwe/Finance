@@ -1,0 +1,50 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+<h1>Expense Distribution</h1>
+
+<div id="pies"></div>
+
+</div>
+
+<script>
+
+let data=JSON.parse(localStorage.getItem("financeData"));
+let area=document.getElementById("pies");
+
+data.results.forEach(m=>{
+
+area.innerHTML+=`
+<div class="card">
+<h3>Month ${m.month}</h3>
+<canvas id="pie${m.month}"></canvas>
+</div>
+`;
+
+new Chart(document.getElementById("pie"+m.month),{
+type:"pie",
+data:{
+labels:["Food","Rent","Transport","Fun","Shopping"],
+datasets:[{
+data:[
+m.food,
+m.rent,
+m.transport,
+m.fun,
+m.shopping
+]
+}]
+}
+});
+});
+
+</script>
+
+</body>
+</html>

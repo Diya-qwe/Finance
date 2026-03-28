@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Finance Dashboard</h1>
+
+<div class="nav">
+<a href="graphs.html"><button>Graphs</button></a>
+<a href="piecharts.html"><button>Pie Charts</button></a>
+</div>
+
+<div id="dashboard"></div>
+
+</div>
+
+<script>
+
+const data=JSON.parse(localStorage.getItem("financeData"));
+
+let html=`<div class="card">
+Goal: ₹${data.goal}<br>
+Total Saved: ₹${data.total_saved}<br>
+Status: ${data.goal_status}
+</div>`;
+
+data.results.forEach(m=>{
+html+=`
+<div class="card">
+Month ${m.month}<br>
+Income: ₹${m.income}<br>
+Expense: ₹${m.total_expense}<br>
+Savings: ₹${m.savings}<br>
+Advice: ${m.advice}
+</div>`;
+});
+
+document.getElementById("dashboard").innerHTML=html;
+
+</script>
+
+</body>
+</html>

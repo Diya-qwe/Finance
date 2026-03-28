@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Finance Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Smart Finance Dashboard</h1>
+
+<div class="nav">
+<a href="graphs.html"><button>Graphs</button></a>
+<a href="piecharts.html"><button>Pie Charts</button></a>
+</div>
+
+<div id="summary"></div>
+
+</div>
+
+<script>
+
+const data = JSON.parse(localStorage.getItem("financeData"));
+
+const div=document.getElementById("summary");
+
+let html="";
+
+data.results.forEach(m=>{
+
+html+=`
+<div class="card">
+<h2>Month ${m.month}</h2>
+
+Income: ₹${m.income}<br>
+Total Expense: ₹${m.total_expense}<br>
+Savings: ₹${m.savings}<br>
+Saving Rate: ${m.saving_rate}%<br>
+
+<b>${m.advice}</b>
+
+</div>
+`;
+});
+
+div.innerHTML=html;
+
+</script>
+
+</body>
+</html>

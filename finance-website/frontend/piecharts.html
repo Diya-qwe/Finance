@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expense Distribution</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+.pie-container{
+width:420px;
+margin:auto;
+}
+
+canvas{
+max-width:420px!important;
+max-height:420px!important;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 style="text-align:center;">Expense Distribution (All Months)</h1>
+
+<div class="nav">
+<a href="summary.html"><button>Dashboard</button></a>
+<a href="graphs.html"><button>Graphs</button></a>
+</div>
+
+<div id="charts"></div>
+
+</div>
+
+<script>
+
+const data = JSON.parse(localStorage.getItem("financeData"));
+
+if(!data){
+alert("Submit data first!");
+window.location.href="index.html";
+}
+
+const container=document.getElementById("charts");
+
+data.results.forEach(m=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<h2 style="text-align:center;">Month ${m.month}</h2>
+
+<div class="pie-container">
+<canvas id="pie${m.month}"></canvas>
+</div>
+`;
+
+container.appendChild(card);
+
+new Chart(document.getElementById(`pie${m.month}`),{
+
+type:'pie',
+
+data:{
+labels:['Food','Transport','Rent','Entertainment','Shopping'],
+datasets:[{
+data:[
+m.food,
+m.transport,
+m.rent,
+m.fun,
+m.shopping
+]
+}]
+},
+
+options:{
+responsive:true,
+plugins:{
+legend:{
+labels:{
+color:'white',
+font:{size:14}
+}
+}
+}
+}
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
