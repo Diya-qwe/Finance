@@ -73,7 +73,6 @@
             let rent = [];
             let fun = [];
             let shopping = [];
-            let totalExpenses = [];
 
             // Loop through results to extract data
             data.results.forEach(m => {
@@ -83,7 +82,6 @@
                 rent.push(m.rent);
                 fun.push(m.fun);
                 shopping.push(m.shopping);
-                totalExpenses.push(m.total_expense);
             });
 
             // Function to create chart with selected datasets
