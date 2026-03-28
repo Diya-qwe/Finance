@@ -3,67 +3,110 @@
 <head>
     <title>Expense Breakdown</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        h1 {
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
             text-align: center;
-            color: #333;
+            margin-bottom: 30px;
         }
-        canvas {
-            margin-top: 20px;
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
         .nav {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .nav button {
             margin: 5px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             cursor: pointer;
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
+
         .nav button:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .nav button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            .card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Monthly Expense Breakdown</h1>
-        
-        <div class="nav">
-            <button onclick="showAllExpenses()">All Expenses</button>
-            <button onclick="showFood()">Food Only</button>
-            <button onclick="showTransport()">Transport Only</button>
-            <button onclick="showRent()">Rent Only</button>
-            <button onclick="showFun()">Entertainment</button>
-            <button onclick="showShopping()">Shopping</button>
+        <div class="header">
+            <h1>📊 Monthly Expense Breakdown</h1>
         </div>
         
-        <canvas id="lineChart"></canvas>
+        <div class="card">
+            <div class="nav">
+                <button onclick="showAllExpenses()">All Expenses</button>
+                <button onclick="showFood()">🍔 Food Only</button>
+                <button onclick="showTransport()">🚗 Transport Only</button>
+                <button onclick="showRent()">🏠 Rent Only</button>
+                <button onclick="showFun()">🎬 Entertainment</button>
+                <button onclick="showShopping()">🛍️ Shopping</button>
+            </div>
+            <canvas id="lineChart"></canvas>
+        </div>
     </div>
 
     <script>
-        // Get data from localStorage
         let data = JSON.parse(localStorage.getItem("financeData"));
         let currentChart = null;
 
-        // Check if data exists
         if (!data || !data.results) {
             document.getElementById("lineChart").innerHTML = "No data available. Please fill the form first.";
         } else {
@@ -74,7 +117,6 @@
             let fun = [];
             let shopping = [];
 
-            // Loop through results to extract data
             data.results.forEach(m => {
                 labels.push("Month " + m.month);
                 food.push(m.food);
@@ -84,95 +126,51 @@
                 shopping.push(m.shopping);
             });
 
-            // Function to create chart with selected datasets
             function createChart(datasets) {
-                if (currentChart) {
-                    currentChart.destroy();
-                }
-                
+                if (currentChart) currentChart.destroy();
                 currentChart = new Chart(document.getElementById("lineChart"), {
                     type: "line",
-                    data: {
-                        labels: labels,
-                        datasets: datasets
-                    },
+                    data: { labels: labels, datasets: datasets },
                     options: {
                         responsive: true,
                         plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            }
+                            legend: { position: 'top' },
+                            tooltip: { mode: 'index', intersect: false }
                         },
                         scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Amount (₹)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Months'
-                                }
-                            }
+                            y: { beginAtZero: true, title: { display: true, text: 'Amount (₹)' } },
+                            x: { title: { display: true, text: 'Months' } }
                         }
                     }
                 });
             }
 
-            // Show all expenses
             window.showAllExpenses = function() {
                 createChart([
-                    { label: "Food", data: food, borderColor: "#FF6384", backgroundColor: "rgba(255, 99, 132, 0.1)", fill: false, tension: 0.1 },
-                    { label: "Transport", data: transport, borderColor: "#36A2EB", backgroundColor: "rgba(54, 162, 235, 0.1)", fill: false, tension: 0.1 },
-                    { label: "Rent", data: rent, borderColor: "#FFCE56", backgroundColor: "rgba(255, 206, 86, 0.1)", fill: false, tension: 0.1 },
-                    { label: "Entertainment", data: fun, borderColor: "#4BC0C0", backgroundColor: "rgba(75, 192, 192, 0.1)", fill: false, tension: 0.1 },
-                    { label: "Shopping", data: shopping, borderColor: "#9966FF", backgroundColor: "rgba(153, 102, 255, 0.1)", fill: false, tension: 0.1 }
+                    { label: "Food", data: food, borderColor: "#FF6384", fill: false, tension: 0.1 },
+                    { label: "Transport", data: transport, borderColor: "#36A2EB", fill: false, tension: 0.1 },
+                    { label: "Rent", data: rent, borderColor: "#FFCE56", fill: false, tension: 0.1 },
+                    { label: "Entertainment", data: fun, borderColor: "#4BC0C0", fill: false, tension: 0.1 },
+                    { label: "Shopping", data: shopping, borderColor: "#9966FF", fill: false, tension: 0.1 }
                 ]);
             }
 
-            // Show Food only
             window.showFood = function() {
-                createChart([
-                    { label: "Food", data: food, borderColor: "#FF6384", backgroundColor: "rgba(255, 99, 132, 0.1)", fill: false, tension: 0.1 }
-                ]);
+                createChart([{ label: "Food", data: food, borderColor: "#FF6384", fill: false, tension: 0.1 }]);
             }
-
-            // Show Transport only
             window.showTransport = function() {
-                createChart([
-                    { label: "Transport", data: transport, borderColor: "#36A2EB", backgroundColor: "rgba(54, 162, 235, 0.1)", fill: false, tension: 0.1 }
-                ]);
+                createChart([{ label: "Transport", data: transport, borderColor: "#36A2EB", fill: false, tension: 0.1 }]);
             }
-
-            // Show Rent only
             window.showRent = function() {
-                createChart([
-                    { label: "Rent", data: rent, borderColor: "#FFCE56", backgroundColor: "rgba(255, 206, 86, 0.1)", fill: false, tension: 0.1 }
-                ]);
+                createChart([{ label: "Rent", data: rent, borderColor: "#FFCE56", fill: false, tension: 0.1 }]);
             }
-
-            // Show Entertainment only
             window.showFun = function() {
-                createChart([
-                    { label: "Entertainment", data: fun, borderColor: "#4BC0C0", backgroundColor: "rgba(75, 192, 192, 0.1)", fill: false, tension: 0.1 }
-                ]);
+                createChart([{ label: "Entertainment", data: fun, borderColor: "#4BC0C0", fill: false, tension: 0.1 }]);
             }
-
-            // Show Shopping only
             window.showShopping = function() {
-                createChart([
-                    { label: "Shopping", data: shopping, borderColor: "#9966FF", backgroundColor: "rgba(153, 102, 255, 0.1)", fill: false, tension: 0.1 }
-                ]);
+                createChart([{ label: "Shopping", data: shopping, borderColor: "#9966FF", fill: false, tension: 0.1 }]);
             }
 
-            // Show all expenses by default
             showAllExpenses();
         }
     </script>
