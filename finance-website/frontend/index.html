@@ -86,7 +86,7 @@ document.querySelectorAll(".rent").forEach(e=>data.rent.push(e.value));
 document.querySelectorAll(".fun").forEach(e=>data.fun.push(e.value));
 document.querySelectorAll(".shopping").forEach(e=>data.shopping.push(e.value));
 
-fetch("http://127.0.0.1:5000/calculate",{
+fetch("https://finance-qk18.onrender.com/calculate",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify(data)
