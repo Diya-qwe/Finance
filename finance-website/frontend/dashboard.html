@@ -1,48 +1,183 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="style.css">
+    <title>Finance Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .summary-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .summary-card .status {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+
+        .card p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 1rem;
+        }
+
+        .card b {
+            color: #764ba2;
+            font-size: 1rem;
+        }
+
+        .nav {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .nav a button {
+            margin: 5px;
+            padding: 12px 24px;
+            cursor: pointer;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav a button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .summary-card .value {
+                font-size: 1.5rem;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Finance Dashboard</h1>
+        </div>
 
-<div class="container">
+        <div class="nav">
+            <a href="graphs.html"><button>📈 Graphs</button></a>
+            <a href="piecharts.html"><button>🥧 Pie Charts</button></a>
+        </div>
 
-<h1>Finance Dashboard</h1>
+        <div id="dashboard"></div>
+    </div>
 
-<div class="nav">
-<a href="graphs.html"><button>Graphs</button></a>
-<a href="piecharts.html"><button>Pie Charts</button></a>
-</div>
+    <script>
+        const data = JSON.parse(localStorage.getItem("financeData"));
 
-<div id="dashboard"></div>
+        let html = `
+            <div class="summary-card">
+                <h3>🎯 Financial Goal</h3>
+                <div class="value">₹${data.goal}</div>
+                <h3>💰 Total Saved</h3>
+                <div class="value">₹${data.total_saved}</div>
+                <div class="status">📊 Status: ${data.goal_status}</div>
+            </div>
+        `;
 
-</div>
+        data.results.forEach(m => {
+            html += `
+                <div class="card">
+                    <h2>📆 Month ${m.month}</h2>
+                    <p>💵 Income: ₹${m.income}</p>
+                    <p>📉 Expense: ₹${m.total_expense}</p>
+                    <p>💰 Savings: ₹${m.savings}</p>
+                    <p>📈 Saving Rate: ${m.saving_rate}%</p>
+                    <p><b>💡 ${m.advice}</b></p>
+                </div>
+            `;
+        });
 
-<script>
-
-const data=JSON.parse(localStorage.getItem("financeData"));
-
-let html=`<div class="card">
-Goal: ₹${data.goal}<br>
-Total Saved: ₹${data.total_saved}<br>
-Status: ${data.goal_status}
-</div>`;
-
-data.results.forEach(m=>{
-html+=`
-<div class="card">
-Month ${m.month}<br>
-Income: ₹${m.income}<br>
-Expense: ₹${m.total_expense}<br>
-Savings: ₹${m.savings}<br>
-Advice: ${m.advice}
-</div>`;
-});
-
-document.getElementById("dashboard").innerHTML=html;
-
-</script>
-
+        document.getElementById("dashboard").innerHTML = html;
+    </script>
 </body>
 </html>
