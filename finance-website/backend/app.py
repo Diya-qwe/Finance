@@ -1,11 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
+# Serve frontend files
+@app.route('/')
+@app.route('/<path:filename>')
+def serve_frontend(filename='index.html'):
+    return send_from_directory('../frontend', filename)
+
 @app.route("/calculate", methods=["POST"])
 def calculate():
+    # rest of your code...
 
     data = request.json
     months = int(data["months"])
