@@ -1,101 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Expense Distribution</title>
+    <title>Expense Distribution</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<link rel="stylesheet" href="style.css">
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-<style>
-.pie-container{
-width:420px;
-margin:auto;
-}
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
 
-canvas{
-max-width:420px!important;
-max-height:420px!important;
-}
-</style>
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
 
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nav a button {
+            margin: 5px;
+            padding: 12px 24px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav a button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .pie-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        canvas {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <div class="header">
+            <h1>🥧 Expense Distribution</h1>
+        </div>
 
-<div class="container">
+        <div class="nav">
+            <a href="summary.html"><button>📊 Dashboard</button></a>
+            <a href="graphs.html"><button>📈 Graphs</button></a>
+        </div>
 
-<h1 style="text-align:center;">Expense Distribution (All Months)</h1>
+        <div id="charts"></div>
+    </div>
 
-<div class="nav">
-<a href="summary.html"><button>Dashboard</button></a>
-<a href="graphs.html"><button>Graphs</button></a>
-</div>
+    <script>
+        const data = JSON.parse(localStorage.getItem("financeData"));
 
-<div id="charts"></div>
+        if (!data) {
+            alert("Submit data first!");
+            window.location.href = "index.html";
+        }
 
-</div>
+        const container = document.getElementById("charts");
 
-<script>
+        data.results.forEach(m => {
+            const card = document.createElement("div");
+            card.className = "card";
 
-const data = JSON.parse(localStorage.getItem("financeData"));
+            card.innerHTML = `
+                <h2>📆 Month ${m.month}</h2>
+                <div class="pie-container">
+                    <canvas id="pie${m.month}"></canvas>
+                </div>
+            `;
 
-if(!data){
-alert("Submit data first!");
-window.location.href="index.html";
-}
+            container.appendChild(card);
 
-const container=document.getElementById("charts");
-
-data.results.forEach(m=>{
-
-const card=document.createElement("div");
-card.className="card";
-
-card.innerHTML=`
-<h2 style="text-align:center;">Month ${m.month}</h2>
-
-<div class="pie-container">
-<canvas id="pie${m.month}"></canvas>
-</div>
-`;
-
-container.appendChild(card);
-
-new Chart(document.getElementById(`pie${m.month}`),{
-
-type:'pie',
-
-data:{
-labels:['Food','Transport','Rent','Entertainment','Shopping'],
-datasets:[{
-data:[
-m.food,
-m.transport,
-m.rent,
-m.fun,
-m.shopping
-]
-}]
-},
-
-options:{
-responsive:true,
-plugins:{
-legend:{
-labels:{
-color:'white',
-font:{size:14}
-}
-}
-}
-}
-
-});
-
-});
-
-</script>
-
+            new Chart(document.getElementById(`pie${m.month}`), {
+                type: 'pie',
+                data: {
+                    labels: ['🍔 Food', '🚗 Transport', '🏠 Rent', '🎬 Entertainment', '🛍️ Shopping'],
+                    datasets: [{
+                        data: [m.food, m.transport, m.rent, m.fun, m.shopping],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
